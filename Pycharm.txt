@@ -1,0 +1,139 @@
+
+isGameStarted = True
+
+player = {
+    'name': 'Steve',
+    'hp': 100,
+    'damage': 10,
+    'armor': None,
+    'weapon': None
+}
+
+cow = {
+    'name': 'Корова',
+    'hp': 20,
+    'type': 'Животное',
+    'isAggressive': False
+}
+
+fly = {
+    'name': 'Муха',
+    'hp': 2,
+    'type': 'Животное',
+    'isAggressive': False
+}
+
+pig = {
+    'name': 'Свинья',
+    'hp': 15,
+    'type': 'Животное',
+    'isAggressive': False
+}
+
+tiger = {
+    'name': 'Тигр',
+    'hp': 50,
+    'damage': 20,
+    'type': 'Животное',
+    'isAggressive': True
+}
+
+entities = [cow, fly, tiger, pig]
+
+def peaceful_answering(input):
+    isAnswering = True
+    while isAnswering:
+        if (input.lower() == 'да'):
+            print(f'Спустя какое-то время вы убили {entity["name"]}')
+            entities.remove(entity)
+            isAnswering = False
+        elif (input.lower() == 'нет'):
+            print('Молодец, идём дальше')
+            isAnswering = False
+
+def agressive_answering(input):
+    isAnswering = True
+    isPositive = False
+    while isAnswering:
+        if (input.lower() == 'да'):
+            isPositive = True
+            isAnswering = False
+        elif (input.lower() == 'нет'):
+            print('Убегаем....')
+            isAnswering = False
+    return isPositive
+
+def user_commands(command):
+    if (command == '/player'):
+        print(f'''             
+                             [Игрок]
+                ==================================
+                ||                              ||
+                ||  Игрок: {player["name"]}     ||
+                ||  Здоровье: {player["hp"]}    ||
+                ||  Оружие: {player["weapon"]}  ||
+                ||                              ||
+                ==================================
+        ''')
+
+def battling(player, entity):
+
+    winner = {'winner': ''}
+
+    print(f'Вы ударили {entity["name"]}!')
+    entity['hp'] -= player['damage']
+    print(f'У {entity["name"]} осталось {entity["hp"] - player["damage"]} ХП')
+    print(f'Вы убили {entity["name"]}')
+    print(f'Вас ударил {entity["name"]}')
+    player['hp'] -= entity['damage']
+    print(f'У вас осталось {player["hp"] - entity["damage"]} ХП')
+
+    if (entity['hp'] <= 0):
+        print(f'Вы убили {entity["name"]}')
+        winner['winner'] = player['name']
+        return winner['winner']
+
+    if (player['hp'] <= 0):
+        print('Вы погибли :(')
+        winner['winner'] = entity['name']
+        return winner['winner']
+
+
+while isGameStarted:
+    print('...')
+    print('Введите "/player" чтобы посмотреть информацию о персонаже')
+    user_commands(input())
+
+    for entity in entities:
+
+        print(f'Вы встретили {entity["name"]}')
+        print(f'Хотите убить {entity["name"]}?\n')
+
+        if entity['isAggressive']:
+            print(f'Ого, похоже {entity["name"]} злой, ты точно не хочешь уйти?\n')
+            user_input = input()
+
+            if (agressive_answering(user_input) == True):
+                isBattling = True
+
+                while isBattling:
+
+                    print(f'Вы ударили {entity["name"]}!')
+                    entity['hp'] -= player['damage']
+                    print(f'У {entity["name"]} осталось {entity["hp"] - player["damage"]} ХП')
+                    print(f'Вы убили {entity["name"]}')
+                    print(f'Вас ударил {entity["name"]}')
+                    player['hp'] -= entity['damage']
+                    print(f'У вас осталось {player["hp"] - entity["damage"]} ХП')
+
+
+
+        elif entity['isAggressive'] == False:
+            user_input = input()
+            peaceful_answering(user_input)
+
+        if not entities:
+            print('Вы убили всех :(')
+            isGameStarted = False
+            print(entities)
+
